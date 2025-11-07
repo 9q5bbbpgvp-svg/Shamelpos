@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-6">
+    <div class="card card-modern p-4">
+      <h3 class="mb-3">تسجيل الدخول</h3>
+      <form method="post">
+        <div class="mb-3">
+          <label>اسم المستخدم</label>
+          <input class="form-control" name="username" required>
+        </div>
+        <div class="mb-3">
+          <label>كلمة المرور</label>
+          <input class="form-control" name="password" type="password" required>
+        </div>
+        <button class="btn btn-primary">دخول</button>
+      </form>
+      <hr>
+      <p>مستخدم تجريبي: <b>admin</b> كلمة المرور: <b>1234</b></p>
+    </div>
+  </div>
+</div>
+{% endblock %}
