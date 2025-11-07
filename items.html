@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="card card-modern p-3">
+      <h5>إضافة صنف جديد</h5>
+      <form method="post" action="{{ url_for('add_item') }}">
+        <div class="mb-2"><input name="name" class="form-control" placeholder="اسم الصنف" required></div>
+        <div class="mb-2"><input name="category" class="form-control" placeholder="نوع الصنف (مثال: سجاير، ولعات)" required></div>
+        <div class="mb-2 row">
+          <div class="col"><input name="buy_price" class="form-control" placeholder="سعر الشراء"></div>
+          <div class="col"><input name="sell_price" class="form-control" placeholder="سعر البيع"></div>
+        </div>
+        <div class="mb-2"><input name="qty" class="form-control" placeholder="الكمية الابتدائية"></div>
+        <button class="btn btn-success">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card card-modern p-3">
+      <h5>قائمة الأصناف</h5>
+      <table class="table table-sm">
+        <thead><tr><th>اسم</th><th>نوع</th><th>سعر شراء</th><th>سعر بيع</th><th>كمية</th><th>أدوات</th></tr></thead>
+        <tbody>
+        {% for it in items %}
+          <tr>
+            <td>{{ it['name'] }}</td>
+            <td>{{ it['category'] }}</td>
+            <td>{{ it['buy_price'] }}</td>
+            <td>{{ it['sell_price'] }}</td>
+            <td>{{ it['qty'] }}</td>
+            <td>
+              <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ it['id'] }}">تعديل</button>
+              <a class="btn btn-sm btn-danger" href="{{ url_for('delete_item', item_id=it['id']) }}" onclick="return confirm('هل تريد الحذف؟')">حذف</a>
+            </td>
+          </tr>
+          <!-- Edit Modal -->
+          <div class="modal fade" id="editModal{{ it['id'] }}" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header"><h5>تعديل الصنف</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+                <form method="post" action="{{ url_for('update_item', item_id=it['id']) }}">
+                  <div class="modal-body">
+                    <input name="name" class="form-control mb-2" value="{{ it['name'] }}">
+                    <input name="category" class="form-control mb-2" value="{{ it['category'] }}">
+                    <div class="row mb-2">
+                      <div class="col"><input name="buy_price" class="form-control" value="{{ it['buy_price'] }}"></div>
+                      <div class="col"><input name="sell_price" class="form-control" value="{{ it['sell_price'] }}"></div>
+                    </div>
+                    <input name="qty" class="form-control" value="{{ it['qty'] }}">
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button class="btn btn-primary">حفظ</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

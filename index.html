@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-6 col-md-2"><a href="{{ url_for('sales') }}" class="btn btn-lg btn-outline-primary w-100 card-modern">فاتورة مبيعات</a></div>
+  <div class="col-6 col-md-2"><a href="{{ url_for('purchases') }}" class="btn btn-lg btn-outline-success w-100 card-modern">فاتورة مشتريات</a></div>
+  <div class="col-6 col-md-2"><a href="{{ url_for('items') }}" class="btn btn-lg btn-outline-warning w-100 card-modern">إضافة أصناف</a></div>
+  <div class="col-6 col-md-2"><a href="{{ url_for('reports') }}" class="btn btn-lg btn-outline-info w-100 card-modern">تقارير</a></div>
+  <div class="col-6 col-md-2"><a href="{{ url_for('shift') }}" class="btn btn-lg btn-outline-dark w-100 card-modern">تقفيل شفت</a></div>
+  <div class="col-12 mt-4"><a href="{{ url_for('logout') }}" class="btn btn-secondary">تسجيل خروج</a></div>
+</div>
+{% endblock %}

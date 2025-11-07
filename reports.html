@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card card-modern p-3">
+  <h5>تقارير المبيعات</h5>
+  <form method="get" class="row g-2 mb-3">
+    <div class="col"><input type="date" name="start" class="form-control" value="{{ start }}"></div>
+    <div class="col"><input type="date" name="end" class="form-control" value="{{ end }}"></div>
+    <div class="col"><button class="btn btn-info">عرض</button></div>
+  </form>
+  {% if report %}
+    <table class="table table-sm">
+      <thead><tr><th>الصنف</th><th>البيع (كم)</th><th>سعر بيع متوسط</th><th>سعر شراء متوسط</th><th>الربح</th><th>المتبقي</th></tr></thead>
+      <tbody>
+        {% for r in report %}
+          <tr><td>{{ r.name }}</td><td>{{ r.sold_qty }}</td><td>{{ r.avg_sell }}</td><td>{{ r.avg_buy }}</td><td>{{ r.profit }}</td><td>{{ r.remaining }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>اختر فترة لعرض التقرير</p>
+  {% endif %}
+</div>
+{% endblock %}

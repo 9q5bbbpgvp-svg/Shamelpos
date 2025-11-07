@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card card-modern p-3">
+  <h5>فاتورة مبيعات</h5>
+  <div class="row">
+    <div class="col-md-5">
+      <label>اختر نوع الصنف</label>
+      <select id="cat-select" class="form-control mb-2">
+        <option value="">الكل</option>
+        {% for c in categories %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+      </select>
+      <div id="item-buttons" class="mb-2">
+        {% for it in query('SELECT * FROM items') %}
+          <button class="btn btn-outline-secondary item-btn" data-id="{{ it['id'] }}" data-price="{{ it['sell_price'] }}" data-name="{{ it['name'] }}" data-cat="{{ it['category'] }}">{{ it['name'] }}</button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-md-7">
+      <table class="table">
+        <thead><tr><th>الصنف</th><th>كمية</th><th>سعر</th><th>إجمالي</th><th></th></tr></thead>
+        <tbody id="invoice-body"></tbody>
+      </table>
+      <div class="d-flex justify-content-between">
+        <div>
+          <label>نوع الدفع</label>
+          <select id="payment-type" class="form-control">
+            <option value="cash">كاش</option>
+            <option value="credit">آجل</option>
+          </select>
+        </div>
+        <div>
+          <h4>الإجمالي: <span id="total">0.00</span></h4>
+        </div>
+      </div>
+      <div class="mt-2">
+        <button id="save-sale" class="btn btn-primary">حفظ الفاتورة</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$(function(){
+  function recalc(){
+    let total=0;
+    $('#invoice-body tr').each(function(){
+      let q = parseFloat($(this).find('.qty').val()||0);
+      let p = parseFloat($(this).find('.price').val()||0);
+      let line = q*p;
+      $(this).find('.line-total').text(line.toFixed(2));
+      total += line;
+    });
+    $('#total').text(total.toFixed(2));
+  }
+  $('.item-btn').click(function(){
+    let id=$(this).data('id'), name=$(this).data('name'), price=$(this).data('price');
+    let row = `<tr data-id="${id}"><td>${name}</td><td><input class="form-control qty" value="1" style="width:80px"></td><td><input class="form-control price" value="${price}" style="width:100px"></td><td class="line-total">${price}</td><td><button class="btn btn-sm btn-danger remove">إزالة</button></td></tr>`;
+    $('#invoice-body').append(row);
+    recalc();
+  });
+  $('#invoice-body').on('input', '.qty, .price', recalc);
+  $('#invoice-body').on('click', '.remove', function(){ $(this).closest('tr').remove(); recalc(); });
+  $('#save-sale').click(function(){
+    let items=[];
+    $('#invoice-body tr').each(function(){ items.push({id: $(this).data('id'), qty: $(this).find('.qty').val(), price: $(this).find('.price').val()}); });
+    if(items.length==0){ alert('لا يوجد أصناف'); return; }
+    let payment = $('#payment-type').val();
+    $.ajax({url:'/sales/new', method:'POST', contentType:'application/json', data: JSON.stringify({items:items, payment_type: payment}), success:function(){ alert('تم الحفظ'); location.reload(); }});
+  });
+  $('#cat-select').change(function(){
+    let v=$(this).val();
+    $('.item-btn').each(function(){ $(this).toggle(v=='' || $(this).data('cat')==v); });
+  });
+});
+</script>
+{% endblock %}
